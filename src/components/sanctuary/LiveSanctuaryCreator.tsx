@@ -90,25 +90,21 @@ const LiveSanctuaryCreator: React.FC = () => {
       });
 
       if (response.success && response.data?.session) {
-        // Extract sessionId with proper fallback chain
         const session = response.data.session;
-        const sessionId = session.id || session._id || session.sessionId;
         
-        console.log('🔍 Session ID extraction:', {
-          fullResponse: response,
+        // Backend returns session.id - extract it directly
+        const sessionId = session.id;
+        
+        console.log('🔍 Session extraction debug:', {
           sessionObject: session,
-          extractedId: sessionId,
-          availableFields: Object.keys(session || {})
+          sessionId: sessionId,
+          responseSuccess: response.success,
+          hasSessionData: !!response.data?.session
         });
         
         if (!sessionId) {
-          console.error('❌ No session ID found in response:', {
-            session,
-            responseKeys: Object.keys(response),
-            dataKeys: response.data ? Object.keys(response.data) : [],
-            sessionKeys: session ? Object.keys(session) : []
-          });
-          throw new Error('Invalid response: missing session ID');
+          console.error('❌ No session ID found:', session);
+          throw new Error('No session ID returned from server');
         }
         
         console.log('✅ Session created with ID:', sessionId);

@@ -64,18 +64,15 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
       });
 
       if (response.success && response.data?.token) {
-        console.log('🔍 Complete admin login response:', {
-          fullResponse: response,
+        console.log('🔍 Admin login response debug:', {
+          success: response.success,
           hasToken: !!response.data.token,
-          hasAdmin: !!response.data.admin,
           hasUser: !!response.data.user,
-          tokenValue: response.data.token?.substring(0, 20) + '...',
-          responseKeys: Object.keys(response),
-          dataKeys: response.data ? Object.keys(response.data) : []
+          userRole: response.data.user?.role
         });
 
-        // Backend returns both user and admin objects - prefer admin, fallback to user
-        const adminUser = response.data.admin || response.data.user;
+        // Backend returns user object (not admin object) - use it directly
+        const adminUser = response.data.user;
         
         console.log('🔍 Selected admin user:', {
           selectedUser: adminUser,
