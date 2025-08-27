@@ -82,13 +82,31 @@ const LiveSanctuaryCreator: React.FC = () => {
         expireHours: data.expireHours,
       });
 
-      console.log('📡 Live sanctuary creation response:', response);
+      console.log('📡 Live sanctuary creation response:', { 
+        success: response.success, 
+        hasData: !!response.data,
+        hasSession: !!response.data?.session,
+        sessionData: response.data?.session 
+      });
 
       if (response.success && response.data?.session) {
-        const sessionId = response.data.session.id || response.data.session._id;
+        // Extract sessionId with proper fallback chain
+        const session = response.data.session;
+        const sessionId = session.id || session._id || session.sessionId;
+        
+        console.log('🔍 Session ID extraction:', {
+          sessionObject: session,
+          extractedId: sessionId,
+          sessionId: session.id,
+          _id: session._id,
+          sessionIdField: session.sessionId
+        });
         
         if (!sessionId) {
-          console.error('❌ No session ID in response:', response.data);
+          console.error('❌ No session ID found in response:', {
+            session,
+            fullResponse: response.data
+          });
           throw new Error('Invalid response: missing session ID');
         }
         

@@ -64,23 +64,34 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
       });
 
       if (response.success && response.data?.token) {
-        // Check admin role from response - backend returns both user and admin objects
-        const adminUser = response.data.admin || response.data.user;
-        
-        console.log('🔍 Admin login response analysis:', {
+        console.log('🔍 Complete admin login response:', {
           hasToken: !!response.data.token,
           hasAdmin: !!response.data.admin,
           hasUser: !!response.data.user,
-          adminRole: response.data.admin?.role,
-          userRole: response.data.user?.role,
-          adminUser: adminUser
+          adminData: response.data.admin,
+          userData: response.data.user,
+          fullResponseKeys: Object.keys(response.data)
+        });
+
+        // Backend returns both user and admin objects - prefer admin, fallback to user
+        const adminUser = response.data.admin || response.data.user;
+        
+        console.log('🔍 Selected admin user:', {
+          selectedUser: adminUser,
+          role: adminUser?.role,
+          hasRequiredRole: adminUser?.role === 'admin'
         });
         
-        if (!adminUser || adminUser.role !== 'admin') {
+        if (!adminUser) {
+          console.error('❌ No user data in response:', response.data);
+          throw new Error('Invalid response: missing user data');
+        }
+        
+        if (adminUser.role !== 'admin') {
           console.error('❌ Access denied - invalid admin role:', { 
-            adminUserRole: adminUser?.role,
+            userRole: adminUser.role,
             expectedRole: 'admin',
-            fullResponse: response.data
+            userData: adminUser
           });
           throw new Error('Access denied. Admin privileges required.');
         }
