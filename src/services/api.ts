@@ -327,7 +327,9 @@ export const AdminApi = {
       success: response.success,
       hasData: !!response.data,
       hasToken: !!response.data?.token,
-      userRole: response.data?.user?.role
+      userRole: response.data?.user?.role,
+      adminRole: response.data?.admin?.role,
+      fullResponseStructure: response
     });
     
     return response;

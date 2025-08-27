@@ -95,17 +95,18 @@ const LiveSanctuaryCreator: React.FC = () => {
         const sessionId = session.id || session._id || session.sessionId;
         
         console.log('🔍 Session ID extraction:', {
+          fullResponse: response,
           sessionObject: session,
           extractedId: sessionId,
-          sessionId: session.id,
-          _id: session._id,
-          sessionIdField: session.sessionId
+          availableFields: Object.keys(session || {})
         });
         
         if (!sessionId) {
           console.error('❌ No session ID found in response:', {
             session,
-            fullResponse: response.data
+            responseKeys: Object.keys(response),
+            dataKeys: response.data ? Object.keys(response.data) : [],
+            sessionKeys: session ? Object.keys(session) : []
           });
           throw new Error('Invalid response: missing session ID');
         }

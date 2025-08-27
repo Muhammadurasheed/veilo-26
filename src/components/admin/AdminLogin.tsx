@@ -65,12 +65,13 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
       if (response.success && response.data?.token) {
         console.log('🔍 Complete admin login response:', {
+          fullResponse: response,
           hasToken: !!response.data.token,
           hasAdmin: !!response.data.admin,
           hasUser: !!response.data.user,
-          adminData: response.data.admin,
-          userData: response.data.user,
-          fullResponseKeys: Object.keys(response.data)
+          tokenValue: response.data.token?.substring(0, 20) + '...',
+          responseKeys: Object.keys(response),
+          dataKeys: response.data ? Object.keys(response.data) : []
         });
 
         // Backend returns both user and admin objects - prefer admin, fallback to user
